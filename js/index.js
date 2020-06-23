@@ -11,36 +11,35 @@ setInterval(function () {
 }, 2500);
 
 function getMessage() {
-    const currentDate = getCurrentDate();
-    const bday = new Date('2018-04-13');
+    const now = new Date();
+    const days = daysUntulNextBirthday(now);
 
-    let message = '🎁';
-
-    if (currentDate.getTime() > bday.getTime()) {
-        message = Math.floor((new Date('2019-04-13') - currentDate) / (1000 * 60 * 60 * 24));
+    switch (days) {
+        case 0:
+            return 'É HOJE!!!';
+        case 1:
+            return 'É amanhã!';
+        default:
+            return `Falta ${days} dias!`;
     }
-
-    if (currentDate.getTime() < bday.getTime()) {
-        message = Math.floor((bday - currentDate) / (1000 * 60 * 60 * 24));
-    }
-
-    return message;
 }
 
-function getCurrentDate() {
-    const date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
+function daysUntulNextBirthday(now) {
+    const bday = getNextBirthday(now);
+    const days = millisecondsToDays(bday - now);
 
-    if (day < 10) {
-        day = '0' + day;
-    }
+    return Math.ceil(days);
+}
 
-    if (month < 10) {
-        month = '0' + month;
-    }
+function getNextBirthday(now) {
+    const year = now.getFullYear();
+    const bday = new Date(`${year}-04-13`);
 
-    return new Date(`${date.getFullYear()}-${month}-${day}`);
+    return now <= bday ? bday : new Date(`${year + 1}-04-13`);
+}
+
+function millisecondsToDays(ts) {
+    return ts / 1000 / 60 / 60 / 24;
 }
 
 function request(options) {
